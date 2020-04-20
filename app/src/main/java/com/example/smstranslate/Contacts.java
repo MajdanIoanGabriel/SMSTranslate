@@ -34,7 +34,6 @@ import java.util.Objects;
  */
 public class Contacts extends ListFragment {
 
-    public static final int REQUEST_READ_CONTACTS = 79;
     ListView list;
     ArrayList<String> mobileArray;
 
@@ -55,12 +54,7 @@ public class Contacts extends ListFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_CONTACTS)
-                == PackageManager.PERMISSION_GRANTED) {
-            mobileArray = getAllContacts();
-        } else {
-            requestPermission();
-        }
+        mobileArray = getAllContacts();
 
         list = getListView();
 
@@ -69,28 +63,6 @@ public class Contacts extends ListFragment {
         list.setAdapter(adapter);
     }
 
-    private void requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.READ_CONTACTS)) {
-            // show UI part if you want here to show some rationale !!!
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.READ_CONTACTS},
-                    REQUEST_READ_CONTACTS);
-        }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), android.Manifest.permission.READ_CONTACTS)) {
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.READ_CONTACTS},
-                    REQUEST_READ_CONTACTS);
-        }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_READ_CONTACTS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mobileArray = getAllContacts();
-            }
-        }
-    }
     private ArrayList<String> getAllContacts() {
         ArrayList<String> nameList = new ArrayList<>();
         ContentResolver cr = getActivity().getContentResolver();

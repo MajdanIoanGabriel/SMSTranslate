@@ -1,5 +1,6 @@
 package com.example.smstranslate;
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -21,6 +22,7 @@ import com.example.smstranslate.ui.main.SectionsPagerAdapter;
 public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_READ_CONTACTS = 79;
+    public static final int REQUEST_READ_SMS_PERMISSION = 3004;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
-                requestPermission();
+                requestPermissions();
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions();
         }
     }
 
@@ -59,15 +65,28 @@ public class MainActivity extends AppCompatActivity {
                     //
                 }
             }
+            case REQUEST_READ_SMS_PERMISSION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    //
+                }
+            }
         }
     }
 
-    private void requestPermission() {
+    private void requestPermissions() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_CONTACTS},
                     REQUEST_READ_CONTACTS);
-            requestPermission();
+            requestPermissions();
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS},
+                    REQUEST_READ_SMS_PERMISSION);
+            requestPermissions();
         }
     }
 }

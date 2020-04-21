@@ -1,10 +1,12 @@
 package com.example.smstranslate;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
@@ -107,5 +109,14 @@ public class Inbox extends ListFragment {
 
         cursor.close();
         return conversations;
+    }
+
+    @Override
+    public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        Intent intent = new Intent(getActivity(), InboxItem.class);
+        intent.putStringArrayListExtra("messages",mobileArray.get(position));
+        startActivity(intent);
     }
 }

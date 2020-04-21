@@ -19,13 +19,14 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
 public class Inbox extends ListFragment {
 
     ListView list;
-    ArrayList<HashMap<String,String>> mobileArray;
+    ArrayList<ArrayList<String>> mobileArray;
 
     public Inbox() {
         // Required empty public constructor
@@ -52,12 +53,11 @@ public class Inbox extends ListFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //mobileArray = getAllSmsFromProvider();
         mobileArray = getConversations();
 
         list = getListView();
 
-        ArrayAdapter<HashMap<String,String>> adapter = new ArrayAdapter<HashMap<String,String>>(getActivity(),
+        ArrayAdapter<ArrayList<String>> adapter = new ArrayAdapter<ArrayList<String>>(getActivity(),
                 android.R.layout.simple_list_item_2, android.R.id.text2, mobileArray) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -65,46 +65,22 @@ public class Inbox extends ListFragment {
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 
-                text1.setText(mobileArray.get(position).get("Address"));
-                text2.setText(mobileArray.get(position).get("Body"));
+                text1.setText(mobileArray.get(position).get(0));
+                text2.setText(mobileArray.get(position).get(1));
+
+
                 return view;
             }
         };
         list.setAdapter(adapter);
     }
 
-    public ArrayList<String> getAllSmsFromProvider() {
-        ArrayList<String> list = new ArrayList<String>();
-        ContentResolver cr = getActivity().getContentResolver();
-
-        Cursor c = cr.query(Telephony.Sms.Inbox.CONTENT_URI, // Official CONTENT_URI from docs
-                new String[] { Telephony.Sms.Inbox.BODY }, // Select body text
-                null,
-                null,
-                Telephony.Sms.Inbox.DEFAULT_SORT_ORDER); // Default sort order
-
-        int totalSMS = c.getCount();
-
-        if (c.moveToFirst()) {
-            for (int i = 0; i < totalSMS; i++) {
-                list.add(c.getString(0));
-                c.moveToNext();
-            }
-        } else {
-            throw new RuntimeException("You have no SMS in Inbox");
-        }
-        c.close();
-
-        return list;
-    }
-
-    public ArrayList<HashMap<String,String>> getConversations() {
-        ArrayList<HashMap<String,String>> conversation = new ArrayList<>();
+    public ArrayList<ArrayList<String>> getConversations() {
+        ArrayList<ArrayList<String>> conversations = new ArrayList<>();
 
         Uri uri = Uri.parse( "content://sms/inbox/" );
         Cursor cursor = getActivity().getContentResolver().query( uri, null, null ,null, null );
 
-        //startManagingCursor( cursor );
         if( cursor.getCount() > 0 ) {
             String count = Integer.toString( cursor.getCount() );
 
@@ -112,19 +88,24 @@ public class Inbox extends ListFragment {
                 String address = cursor.getString( cursor.getColumnIndex("Address") );
                 String body = cursor.getString( cursor.getColumnIndex("Body"));
 
-                HashMap<String,String> result = new HashMap<>();
-                result.put("Address",address);
-                result.put("Body",body);
+                boolean ok = false;
+                for(ArrayList<String> conv: conversations) {
+                    if (conv.get(0).equals(address)) {
+                        conv.add(1,body);
+                        ok = true;
+                    }
+                }
 
-//                if (conversation.contains(result)) {
-//                    continue;
-//                }
-                conversation.add(result);
-                //addreses.add(address);
+                if (!ok) {
+                    conversations.add(new ArrayList<String>());
+                    conversations.get(conversations.size()-1).add(address);
+                    conversations.get(conversations.size()-1).add(body);
+                }
+
             }
         }
 
         cursor.close();
-        return conversation;
+        return conversations;
     }
 }

@@ -80,15 +80,14 @@ public class Inbox extends ListFragment {
     public ArrayList<ArrayList<String>> getConversations() {
         ArrayList<ArrayList<String>> conversations = new ArrayList<>();
 
-        Uri uri = Uri.parse( "content://sms/inbox/" );
-        Cursor cursor = getActivity().getContentResolver().query( uri, null, null ,null, null );
+        Cursor cursor = getActivity().getContentResolver().query(Telephony.Sms.CONTENT_URI, null, null ,null, "date desc" );
 
         if( cursor.getCount() > 0 ) {
-            String count = Integer.toString( cursor.getCount() );
-
             while( cursor.moveToNext() ) {
-                String address = cursor.getString( cursor.getColumnIndex("Address") );
-                String body = cursor.getString( cursor.getColumnIndex("Body"));
+                String address = cursor.getString( cursor.getColumnIndex("person"));
+                if(address == null)
+                    address = cursor.getString( cursor.getColumnIndex("address"));
+                String body = cursor.getString( cursor.getColumnIndex("body"));
 
                 boolean ok = false;
                 for(ArrayList<String> conv: conversations) {

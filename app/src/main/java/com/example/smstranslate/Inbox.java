@@ -28,7 +28,7 @@ import java.util.Map;
 public class Inbox extends ListFragment {
 
     ListView list;
-    ArrayList<ArrayList<String>> mobileArray;
+    ArrayList<Message> conversations;
 
     public Inbox() {
         // Required empty public constructor
@@ -55,20 +55,19 @@ public class Inbox extends ListFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mobileArray = getConversations();
-
         list = getListView();
+        conversations = Message.getConversations(getContext());
 
-        ArrayAdapter<ArrayList<String>> adapter = new ArrayAdapter<ArrayList<String>>(getActivity(),
-                android.R.layout.simple_list_item_2, android.R.id.text2, mobileArray) {
+        ArrayAdapter<Message> adapter = new ArrayAdapter<Message>(getActivity(),
+                android.R.layout.simple_list_item_2, android.R.id.text2, conversations) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
                 TextView text1 = (TextView) view.findViewById(android.R.id.text1);
                 TextView text2 = (TextView) view.findViewById(android.R.id.text2);
 
-                text1.setText(mobileArray.get(position).get(0));
-                text2.setText(mobileArray.get(position).get(1));
+                text1.setText(conversations.get(position).author);
+                text2.setText(conversations.get(position).body);
 
 
                 return view;
@@ -77,45 +76,14 @@ public class Inbox extends ListFragment {
         list.setAdapter(adapter);
     }
 
-    public ArrayList<ArrayList<String>> getConversations() {
-        ArrayList<ArrayList<String>> conversations = new ArrayList<>();
 
-        Cursor cursor = getActivity().getContentResolver().query(Telephony.Sms.CONTENT_URI, null, null ,null, "date desc" );
-
-        if( cursor.getCount() > 0 ) {
-            while( cursor.moveToNext() ) {
-                String address = cursor.getString( cursor.getColumnIndex("person"));
-                if(address == null)
-                    address = cursor.getString( cursor.getColumnIndex("address"));
-                String body = cursor.getString( cursor.getColumnIndex("body"));
-
-                boolean ok = false;
-                for(ArrayList<String> conv: conversations) {
-                    if (conv.get(0).equals(address)) {
-                        conv.add(1,body);
-                        ok = true;
-                    }
-                }
-
-                if (!ok) {
-                    conversations.add(new ArrayList<String>());
-                    conversations.get(conversations.size()-1).add(address);
-                    conversations.get(conversations.size()-1).add(body);
-                }
-
-            }
-        }
-
-        cursor.close();
-        return conversations;
-    }
 
     @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
 
         Intent intent = new Intent(getActivity(), InboxItem.class);
-        intent.putStringArrayListExtra("messages",mobileArray.get(position));
+        intent.putExtra("author", conversations.get(position).author);
         startActivity(intent);
     }
 }

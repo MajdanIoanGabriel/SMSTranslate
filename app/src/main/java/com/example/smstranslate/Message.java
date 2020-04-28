@@ -13,17 +13,20 @@ public class Message extends View {
 
     public String author;
     public String body;
+    public Integer type;
 
     public static ArrayList<Message> messageList = new ArrayList<>();
+    public static Integer MESSAGE_RECEIVED = 1;
+    public static Integer MESSAGE_SENT = 2;
 
-    public Message(Context context, String auth, String bdy) {
+    public Message(Context context, String auth, String bdy, Integer tp) {
         super(context);
         author = auth;
         body = bdy;
     }
 
-    public static void addMessage(Context context, String auth, String bdy) {
-        messageList.add(new Message(context, auth, bdy));
+    public static void addMessage(Context context, String auth, String bdy, Integer tp) {
+        messageList.add(new Message(context, auth, bdy, tp));
     }
 
     public static void readAllMessages(Context context) {
@@ -35,8 +38,9 @@ public class Message extends View {
             while(cursor.moveToNext()) {
                 String m_address = cursor.getString( cursor.getColumnIndex("address"));
                 String m_body = cursor.getString( cursor.getColumnIndex("body"));
+                Integer m_type = cursor.getInt( cursor.getColumnIndex("type"));
 
-                addMessage(context,m_address,m_body);
+                addMessage(context, m_address, m_body, m_type);
             }
         }
 

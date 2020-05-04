@@ -1,27 +1,67 @@
 <?xml version = "1.0" encoding = "utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity=""
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/name"
-        android:background="@color/colorPrimary"
+    <LinearLayout
+        android:id="@+id/chat"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:minHeight="?actionBarSize"
-        android:padding="@dimen/appbar_padding"
-        android:text=""
-        android:textColor="@color/white"
-        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:orientation="vertical">
 
-    <ListView
-        android:id="@android:id/list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="fill_vertical"
-        android:text="Click"
-        android:textSize="30sp" />
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:minHeight="?actionBarSize"
+            android:padding="@dimen/appbar_padding"
+            android:text=""
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="@color/white" />
+
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_vertical"
+            android:text=""
+            android:textSize="30sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/popup_keyboard"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/text_keyboard_input"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:layout_weight="0.85"
+            android:background="@drawable/edit_text_box"
+            android:padding="4dp"
+            android:autofillHints="Message"
+            android:inputType=""
+            tools:ignore="LabelFor" />
+
+        <ImageView
+            android:id="@+id/image_send"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="0.1"
+            android:src="@drawable/ic_send_black_24dp"
+            android:tint="@android:color/white"
+            android:contentDescription="TODO" />
+    </LinearLayout>
+
 </LinearLayout>

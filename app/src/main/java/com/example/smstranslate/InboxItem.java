@@ -43,16 +43,7 @@ public class InboxItem extends ListActivity {
         input = findViewById(R.id.text_keyboard_input);
         send = findViewById(R.id.image_send);
 
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Message message = new Message(getApplicationContext(), address, input.getText().toString(), Message.MESSAGE_SENT);
-                message.send();
-                input.setText("");
-            }
-        });
-
-        ArrayAdapter adapter = new ArrayAdapter<Message>(this,
+        final ArrayAdapter adapter = new ArrayAdapter<Message>(this,
                 android.R.layout.simple_list_item_1, android.R.id.text1, messages) {
             @Override
             public View getView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -65,6 +56,17 @@ public class InboxItem extends ListActivity {
             }
         };
         list.setAdapter(adapter);
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!input.getText().toString().isEmpty()) {
+                    Message message = new Message(getApplicationContext(), address, input.getText().toString(), Message.MESSAGE_SENT);
+                    message.send();
+                    input.setText("");
+                }
+            }
+        });
     }
 
 }

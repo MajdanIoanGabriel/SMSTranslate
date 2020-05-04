@@ -74,7 +74,7 @@ public class Message extends View {
         ArrayList<Message> messages = new ArrayList<>();
         for (Message message: messageList) {
             if (message.author.equals(auth))
-                messages.add(message);
+                messages.add(0,message);
         }
 
         return messages;

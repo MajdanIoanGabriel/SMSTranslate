@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.provider.Telephony;
+import android.telephony.SmsManager;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -15,9 +16,11 @@ public class Message extends View {
     public String body;
     public Integer type;
 
+
     public static ArrayList<Message> messageList = new ArrayList<>();
     public static Integer MESSAGE_RECEIVED = 1;
     public static Integer MESSAGE_SENT = 2;
+    private static SmsManager smsManager= SmsManager.getDefault();
 
     public Message(Context context, String auth, String bdy, Integer tp) {
         super(context);
@@ -75,5 +78,10 @@ public class Message extends View {
         }
 
         return messages;
+    }
+
+    public void send() {
+        smsManager.sendTextMessage(author,null, body, null, null);
+        messageList.add(this);
     }
 }

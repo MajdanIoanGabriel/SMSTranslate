@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_READ_CONTACTS = 79;
     public static final int REQUEST_READ_SMS_PERMISSION = 3004;
+    public static final int REQUEST_SEND_SMS_PERMISSION = 1005;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermissions();
         }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions();
+        }
     }
 
     @Override
@@ -72,6 +77,13 @@ public class MainActivity extends AppCompatActivity {
                     //
                 }
             }
+            case REQUEST_SEND_SMS_PERMISSION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    //
+                }
+            }
         }
     }
 
@@ -86,6 +98,12 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS},
                     REQUEST_READ_SMS_PERMISSION);
+            requestPermissions();
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS},
+                    REQUEST_SEND_SMS_PERMISSION);
             requestPermissions();
         }
     }

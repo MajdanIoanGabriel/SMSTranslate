@@ -29,6 +29,7 @@ import java.util.Map;
 public class Inbox extends ListFragment {
 
     ListView list;
+    ArrayAdapter<Message> adapter;
     ArrayList<Message> conversations;
 
     public Inbox() {
@@ -59,7 +60,7 @@ public class Inbox extends ListFragment {
         list = getListView();
         conversations = Message.getConversations(getContext());
 
-        ArrayAdapter<Message> adapter = new ArrayAdapter<Message>(getActivity(),
+        adapter = new ArrayAdapter<Message>(getActivity(),
                 android.R.layout.simple_list_item_2, android.R.id.text2, conversations) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
@@ -75,6 +76,15 @@ public class Inbox extends ListFragment {
             }
         };
         list.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        conversations = Message.getConversations(getContext());
+        adapter.clear();
+        adapter.addAll(conversations);
+        adapter.notifyDataSetChanged();
     }
 
     @Override

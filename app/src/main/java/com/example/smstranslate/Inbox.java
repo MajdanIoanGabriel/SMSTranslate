@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,8 +77,6 @@ public class Inbox extends ListFragment {
         list.setAdapter(adapter);
     }
 
-
-
     @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
@@ -86,4 +85,5 @@ public class Inbox extends ListFragment {
         intent.putExtra("author", conversations.get(position).author);
         startActivity(intent);
     }
+
 }

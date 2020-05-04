@@ -1,6 +1,5 @@
 package com.example.smstranslate;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ListActivity;
 import android.content.Intent;

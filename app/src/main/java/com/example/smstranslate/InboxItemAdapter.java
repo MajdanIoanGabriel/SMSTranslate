@@ -54,6 +54,10 @@ public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.Mess
         return messageList.size();
     }
 
+    public void add(Message message) {
+        messageList.add(message);
+    }
+
     public class MessageHolder extends RecyclerView.ViewHolder {
 
         private TextView body;

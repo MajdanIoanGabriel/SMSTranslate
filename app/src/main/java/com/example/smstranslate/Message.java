@@ -30,6 +30,7 @@ public class Message {
     Message(String auth, String bdy, Integer tp) {
         author = auth;
         body = bdy;
+        type = tp;
     }
 
     private static void addMessage(String auth, String bdy, Integer tp) {

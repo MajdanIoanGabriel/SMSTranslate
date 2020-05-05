@@ -4,6 +4,7 @@ package com.example.smstranslate;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,18 +14,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class InboxItem extends ListActivity {
+public class InboxItem extends AppCompatActivity {
 
     public ArrayList<Message> messages;
-    public ListView list;
+    public RecyclerView recyclerView;
     public String address;
     public TextView name;
     public EditText input;
     public ImageView send;
-    ArrayAdapter<Message> adapter;
+    InboxItemAdapter recyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,25 +43,17 @@ public class InboxItem extends ListActivity {
         name = findViewById(R.id.name);
         name.setText(address);
 
-        list = getListView();
+        recyclerView = findViewById(R.id.recycler_view);
         input = findViewById(R.id.text_keyboard_input);
         send = findViewById(R.id.image_send);
 
-        adapter = new ArrayAdapter<Message>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, messages) {
-            @NonNull
-            @Override
-            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text1 = view.findViewById(android.R.id.text1);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setStackFromEnd(true);
+        recyclerView.setLayoutManager(layoutManager);
 
-                text1.setText(messages.get(position).body);
+        recyclerAdapter = new InboxItemAdapter(messages, this);
+        recyclerView.setAdapter(recyclerAdapter);
 
-                return view;
-            }
-        };
-        list.setAdapter(adapter);
-        list.setStackFromBottom(true);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +62,8 @@ public class InboxItem extends ListActivity {
                     Message message = new Message(address, input.getText().toString(), Message.MESSAGE_SENT);
                     message.send();
                     input.setText("");
-                    adapter.add(message);
-                    adapter.notifyDataSetChanged();
+                    recyclerAdapter.add(message);
+                    recyclerAdapter.notifyDataSetChanged();
                 }
             }
         });

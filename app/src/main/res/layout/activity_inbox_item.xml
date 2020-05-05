@@ -25,13 +25,11 @@
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
             android:textColor="@color/white" />
 
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="fill_vertical"
-            android:text=""
-            android:textSize="30sp" />
+            android:scrollbars="vertical" />
     </LinearLayout>
 
     <LinearLayout

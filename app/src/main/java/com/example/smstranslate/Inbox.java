@@ -45,6 +45,7 @@ public class Inbox extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         list = getListView();
+        Contact.updateContacts(getActivity());
         conversations = Message.getConversations(getContext());
 
         adapter = new ArrayAdapter<Message>(Objects.requireNonNull(getActivity()),

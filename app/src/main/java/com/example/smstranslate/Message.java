@@ -10,7 +10,12 @@ import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -23,9 +28,11 @@ public class Message {
 
 
     private static ArrayList<Message> messageList = new ArrayList<>();
-    static Integer MESSAGE_RECEIVED = 1;
-    static Integer MESSAGE_SENT = 2;
+    public static final int MESSAGE_RECEIVED = 1;
+    public static final int MESSAGE_SENT = 2;
     private static SmsManager smsManager= SmsManager.getDefault();
+
+
 
     Message(String auth, String bdy, Integer tp) {
         author = auth;
@@ -136,4 +143,5 @@ public class Message {
             }
         }
     }
+
 }

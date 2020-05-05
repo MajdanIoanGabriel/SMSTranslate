@@ -2,16 +2,11 @@ package com.example.smstranslate;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
 import android.provider.ContactsContract;
@@ -22,20 +17,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Contacts#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Contacts extends ListFragment {
 
-    ListView list;
-    ArrayList<String> mobileArray;
+    private ListView list;
+    private ArrayList<String> mobileArray;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,14 +47,14 @@ public class Contacts extends ListFragment {
 
         list = getListView();
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),
+        ArrayAdapter adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
                 android.R.layout.simple_list_item_1, android.R.id.text1, mobileArray);
         list.setAdapter(adapter);
     }
 
     private ArrayList<String> getAllContacts() {
         ArrayList<String> nameList = new ArrayList<>();
-        ContentResolver cr = getActivity().getContentResolver();
+        ContentResolver cr = Objects.requireNonNull(getActivity()).getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
         if ((cur != null ? cur.getCount() : 0) > 0) {
@@ -81,7 +70,7 @@ public class Contacts extends ListFragment {
                             null,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                             new String[]{id}, null);
-                    while (pCur.moveToNext()) {
+                    while (Objects.requireNonNull(pCur).moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(
                                 ContactsContract.CommonDataKinds.Phone.NUMBER));
                     }

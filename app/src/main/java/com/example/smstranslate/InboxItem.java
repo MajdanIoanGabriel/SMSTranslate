@@ -71,6 +71,8 @@ public class InboxItem extends ListActivity {
                 }
             }
         });
+
     }
+
 
 }

@@ -1,38 +1,28 @@
 package com.example.smstranslate;
 
-import android.content.ContentResolver;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
 
+import android.content.Intent;
+import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
-
-import android.provider.Telephony;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 
 public class Inbox extends ListFragment {
 
-    ListView list;
-    ArrayList<Message> conversations;
+    private ListView list;
+    private static ArrayAdapter<Message> adapter;
+    private ArrayList<Message> conversations;
 
-    public Inbox() {
-        // Required empty public constructor
-    }
+    public Inbox() {}
 
     public static Inbox newInstance() {
         Inbox fragment = new Inbox();
@@ -48,7 +38,6 @@ public class Inbox extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.inbox_fragment, container, false);
     }
 
@@ -58,13 +47,14 @@ public class Inbox extends ListFragment {
         list = getListView();
         conversations = Message.getConversations(getContext());
 
-        ArrayAdapter<Message> adapter = new ArrayAdapter<Message>(getActivity(),
+        adapter = new ArrayAdapter<Message>(Objects.requireNonNull(getActivity()),
                 android.R.layout.simple_list_item_2, android.R.id.text2, conversations) {
+            @NonNull
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
                 View view = super.getView(position, convertView, parent);
-                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+                TextView text1 = view.findViewById(android.R.id.text1);
+                TextView text2 = view.findViewById(android.R.id.text2);
 
                 text1.setText(conversations.get(position).author);
                 text2.setText(conversations.get(position).body);
@@ -74,9 +64,22 @@ public class Inbox extends ListFragment {
             }
         };
         list.setAdapter(adapter);
+        Message.IncomingSms.getInboxInstance(this);
     }
 
+    private void refreshAdapter() {
+        conversations = Message.getConversations(getContext());
+        adapter.clear();
+        adapter.addAll(conversations);
+        adapter.notifyDataSetChanged();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        conversations = Message.getConversations(getContext());
+        refreshAdapter();
+    }
 
     @Override
     public void onListItemClick(@NonNull ListView l, @NonNull View v, int position, long id) {
@@ -86,4 +89,7 @@ public class Inbox extends ListFragment {
         intent.putExtra("author", conversations.get(position).author);
         startActivity(intent);
     }
+
+
+
 }

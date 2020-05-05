@@ -2,16 +2,12 @@ package com.example.smstranslate;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
 import android.provider.ContactsContract;
@@ -20,22 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link Contacts#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Contacts extends ListFragment {
 
-    ListView list;
-    ArrayList<String> mobileArray;
+    private ListView list;
+    private ArrayList<Contact> mobileArray;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,47 +45,29 @@ public class Contacts extends ListFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mobileArray = getAllContacts();
+        mobileArray = Contact.getContactList(getActivity());
 
         list = getListView();
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, mobileArray);
+        ArrayAdapter<Contact> adapter = new ArrayAdapter<Contact>(Objects.requireNonNull(getActivity()),
+                android.R.layout.simple_list_item_2, android.R.id.text2, mobileArray){
+            @NonNull
+            @Override
+            public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                TextView text1 = view.findViewById(android.R.id.text1);
+                TextView text2 = view.findViewById(android.R.id.text2);
+
+                text1.setText(mobileArray.get(position).name);
+                text2.setText(mobileArray.get(position).number);
+
+                return view;
+            }
+        };
         list.setAdapter(adapter);
     }
 
-    private ArrayList<String> getAllContacts() {
-        ArrayList<String> nameList = new ArrayList<>();
-        ContentResolver cr = getActivity().getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
-        if ((cur != null ? cur.getCount() : 0) > 0) {
-            while (cur.moveToNext()) {
-                String id = cur.getString(
-                        cur.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cur.getString(cur.getColumnIndex(
-                        ContactsContract.Contacts.DISPLAY_NAME));
-                nameList.add(name);
-                if (cur.getInt(cur.getColumnIndex( ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor pCur = cr.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            new String[]{id}, null);
-                    while (pCur.moveToNext()) {
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    }
-                    pCur.close();
-                }
-            }
-        }
-        if (cur != null) {
-            cur.close();
-        }
-        Collections.sort(nameList);
-        return nameList;
-    }
+
 
     public Contacts() {}
 

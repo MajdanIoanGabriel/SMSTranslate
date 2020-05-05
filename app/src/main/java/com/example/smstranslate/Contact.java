@@ -3,30 +3,50 @@ package com.example.smstranslate;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.os.Build;
 import android.provider.ContactsContract;
+
+import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public class Contact {
     String name;
     String number;
 
-    private static ArrayList<Contact> contactList = new ArrayList<>();
+    public static ArrayList<Contact> contactList = new ArrayList<>();
 
     public Contact(String c_name, String c_number) {
         name = c_name;
         number = c_number;
     }
 
-    public static ArrayList<Contact> getContactList(Activity activity) {
-        updateContacts(activity);
-        return contactList;
+
+    public static String findNameByNumber(String number) {
+
+        for(Contact contact: contactList) {
+            if(contact.number.contains(number) || number.contains(contact.number))
+                return contact.name;
+        }
+
+        return number;
     }
 
-    private static void updateContacts(Activity activity) {
+    public static String findNumberByName(String name) {
+
+        for(Contact contact: contactList) {
+            if(contact.name.equals(name))
+                return contact.number;
+        }
+
+        return name;
+    }
+
+    public static void updateContacts(Activity activity) {
         ArrayList<Contact> contactArrayList = new ArrayList<>();
         ContentResolver cr = Objects.requireNonNull(activity.getContentResolver());
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,

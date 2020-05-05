@@ -48,7 +48,7 @@ public class Message {
                 String m_body = cursor.getString( cursor.getColumnIndex("body"));
                 Integer m_type = cursor.getInt( cursor.getColumnIndex("type"));
 
-                addMessage(m_address, m_body, m_type);
+                addMessage(Contact.findNameByNumber(m_address), m_body, m_type);
             }
         }
 
@@ -86,7 +86,7 @@ public class Message {
     }
 
     void send() {
-        smsManager.sendTextMessage(author,null, body, null, null);
+        smsManager.sendTextMessage(Contact.findNumberByName(author),null, body, null, null);
         messageList.add(this);
     }
 

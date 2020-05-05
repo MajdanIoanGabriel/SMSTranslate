@@ -1,8 +1,6 @@
 package com.example.smstranslate;
 
 import android.annotation.TargetApi;
-import android.content.ContentResolver;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -10,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 
 
@@ -45,7 +41,7 @@ public class Contacts extends ListFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mobileArray = Contact.getContactList(getActivity());
+        mobileArray = Contact.contactList;
 
         list = getListView();
 

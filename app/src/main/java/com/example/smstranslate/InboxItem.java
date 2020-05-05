@@ -57,6 +57,7 @@ public class InboxItem extends ListActivity {
             }
         };
         list.setAdapter(adapter);
+        list.setStackFromBottom(true);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override

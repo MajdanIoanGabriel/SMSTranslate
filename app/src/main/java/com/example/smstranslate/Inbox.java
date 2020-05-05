@@ -1,6 +1,9 @@
 package com.example.smstranslate;
 
+import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -12,12 +15,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
 import android.provider.Telephony;
+import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +36,7 @@ import java.util.Map;
 public class Inbox extends ListFragment {
 
     ListView list;
-    ArrayAdapter<Message> adapter;
+    static ArrayAdapter<Message> adapter;
     ArrayList<Message> conversations;
 
     public Inbox() {
@@ -76,15 +83,21 @@ public class Inbox extends ListFragment {
             }
         };
         list.setAdapter(adapter);
+        Message.IncomingSms.getInboxInstance(this);
+    }
+
+    public void refreshAdapter() {
+        conversations = Message.getConversations(getContext());
+        adapter.clear();
+        adapter.addAll(conversations);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         conversations = Message.getConversations(getContext());
-        adapter.clear();
-        adapter.addAll(conversations);
-        adapter.notifyDataSetChanged();
+        refreshAdapter();
     }
 
     @Override
@@ -95,5 +108,7 @@ public class Inbox extends ListFragment {
         intent.putExtra("author", conversations.get(position).author);
         startActivity(intent);
     }
+
+
 
 }

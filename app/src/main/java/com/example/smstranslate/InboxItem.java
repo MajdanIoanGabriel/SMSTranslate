@@ -62,7 +62,7 @@ public class InboxItem extends ListActivity {
             @Override
             public void onClick(View v) {
                 if(!input.getText().toString().isEmpty()) {
-                    Message message = new Message(getApplicationContext(), address, input.getText().toString(), Message.MESSAGE_SENT);
+                    Message message = new Message(address, input.getText().toString(), Message.MESSAGE_SENT);
                     message.send();
                     input.setText("");
                     adapter.add(message);

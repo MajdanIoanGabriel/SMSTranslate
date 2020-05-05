@@ -1,16 +1,26 @@
 package com.example.smstranslate;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
+import android.telephony.SmsMessage;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
 @SuppressLint("ViewConstructor")
-public class Message extends View {
+public class Message {
 
     public String author;
     public String body;
@@ -22,14 +32,13 @@ public class Message extends View {
     public static Integer MESSAGE_SENT = 2;
     private static SmsManager smsManager= SmsManager.getDefault();
 
-    public Message(Context context, String auth, String bdy, Integer tp) {
-        super(context);
+    public Message(String auth, String bdy, Integer tp) {
         author = auth;
         body = bdy;
     }
 
-    public static void addMessage(Context context, String auth, String bdy, Integer tp) {
-        messageList.add(new Message(context, auth, bdy, tp));
+    public static void addMessage(String auth, String bdy, Integer tp) {
+        messageList.add(new Message(auth, bdy, tp));
     }
 
     public static void readAllMessages(Context context) {
@@ -43,7 +52,7 @@ public class Message extends View {
                 String m_body = cursor.getString( cursor.getColumnIndex("body"));
                 Integer m_type = cursor.getInt( cursor.getColumnIndex("type"));
 
-                addMessage(context, m_address, m_body, m_type);
+                addMessage(m_address, m_body, m_type);
             }
         }
 
@@ -83,5 +92,60 @@ public class Message extends View {
     public void send() {
         smsManager.sendTextMessage(author,null, body, null, null);
         messageList.add(this);
+    }
+
+    public static class IncomingSms extends BroadcastReceiver {
+
+        public IncomingSms() {
+            super();
+        }
+        public static void getInboxInstance(Inbox inboxInstance) {
+            inbox = inboxInstance;
+        }
+
+        // Get the object of SmsManager
+        final SmsManager sms = SmsManager.getDefault();
+        public static Inbox inbox;
+
+        public void onReceive(Context context, Intent intent) {
+
+            // Retrieves a map of extended data from the intent.
+            final Bundle bundle = intent.getExtras();
+
+            try {
+
+                if (bundle != null) {
+
+                    final Object[] pdusObj = (Object[]) bundle.get("pdus");
+
+                    for (int i = 0; i < pdusObj.length; i++) {
+
+                        SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                        String phoneNumber = currentMessage.getDisplayOriginatingAddress();
+
+                        String senderNum = phoneNumber;
+                        String message = currentMessage.getDisplayMessageBody();
+
+                        Log.i("SmsReceiver", "senderNum: "+ senderNum + "; message: " + message);
+
+
+                        // Show Alert
+                        int duration = Toast.LENGTH_LONG;
+                        Toast toast = Toast.makeText(context,
+                                "senderNum: "+ senderNum + ", message: " + message, duration);
+                        toast.show();
+
+                        addMessage(senderNum, message, MESSAGE_RECEIVED);
+                        inbox.getFragmentManager().beginTransaction().detach(inbox).attach(inbox).commit();
+
+
+                    } // end for loop
+                } // bundle is null
+
+            } catch (Exception e) {
+                Log.e("SmsReceiver", "Exception smsReceiver" +e);
+
+            }
+        }
     }
 }

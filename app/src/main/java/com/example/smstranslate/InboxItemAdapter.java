@@ -26,8 +26,18 @@ public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.Mess
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
         // Inflate the layout view you have created for the list rows here
-        View view = layoutInflater.inflate(R.layout.chat_bubble_left, parent, false);
+        View view;
+
+        if (viewType  == Message.MESSAGE_RECEIVED)
+            view = layoutInflater.inflate(R.layout.chat_bubble_left, parent, false);
+        else
+            view = layoutInflater.inflate(R.layout.chat_bubble_right, parent, false);
         return new MessageHolder(view);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return messageList.get(position).type;
     }
 
     @Override
@@ -36,6 +46,7 @@ public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.Mess
 
         // Set the data to the views here
         holder.body.setText(message.body);
+        holder.type = message.type;
     }
 
     @Override
@@ -46,6 +57,7 @@ public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.Mess
     public class MessageHolder extends RecyclerView.ViewHolder {
 
         private TextView body;
+        private int type;
 
 
         public MessageHolder(View itemView) {

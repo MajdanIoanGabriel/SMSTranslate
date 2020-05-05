@@ -46,7 +46,6 @@ public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.Mess
 
         // Set the data to the views here
         holder.body.setText(message.body);
-        holder.type = message.type;
     }
 
     @Override
@@ -61,13 +60,11 @@ public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.Mess
     public class MessageHolder extends RecyclerView.ViewHolder {
 
         private TextView body;
-        private int type;
-
 
         public MessageHolder(View itemView) {
             super(itemView);
 
-            body = itemView.findViewById(R.id.chat_bubble_left);
+            body = itemView.findViewById(R.id.chat_text);
         }
 
     }

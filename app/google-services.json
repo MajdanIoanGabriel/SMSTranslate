@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "334764822719",
+    "firebase_url": "https://smstranslate-4cce4.firebaseio.com",
+    "project_id": "smstranslate-4cce4",
+    "storage_bucket": "smstranslate-4cce4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334764822719:android:e364fadf000afda47cf60a",
+        "android_client_info": {
+          "package_name": "com.example.smstranslate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "334764822719-kq26k3tc40bjdraav6spfn2feqr13s30.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhLhhci-VQDZdNkK_38b91Z2EQNh4RTGU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "334764822719-kq26k3tc40bjdraav6spfn2feqr13s30.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

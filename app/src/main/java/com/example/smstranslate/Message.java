@@ -10,11 +10,7 @@ import android.provider.Telephony;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -25,6 +21,7 @@ public class Message {
     String author;
     String body;
     Integer type;
+    boolean translated;
 
 
     private static ArrayList<Message> messageList = new ArrayList<>();
@@ -38,13 +35,14 @@ public class Message {
         author = auth;
         body = bdy;
         type = tp;
+        translated = false;
     }
 
     private static void addMessage(String auth, String bdy, Integer tp) {
-        messageList.add(new Message(auth, bdy, tp));
+        messageList.add(0, new Message(auth, bdy, tp));
     }
 
-    private static void readAllMessages(Context context) {
+    public static void readAllMessages(Context context) {
         messageList = new ArrayList<>();
 
         Cursor cursor = context.getContentResolver().query(Telephony.Sms.CONTENT_URI, null, null ,null, "date desc" );
@@ -55,15 +53,16 @@ public class Message {
                 String m_body = cursor.getString( cursor.getColumnIndex("body"));
                 Integer m_type = cursor.getInt( cursor.getColumnIndex("type"));
 
-                addMessage(Contact.findNameByNumber(m_address), m_body, m_type);
+                Message message = new Message(Contact.findNameByNumber(m_address), m_body, m_type);
+                messageList.add(message);
+
             }
         }
 
         cursor.close();
     }
 
-    static ArrayList<Message> getConversations(Context context) {
-        readAllMessages(context);
+    static ArrayList<Message> getConversations() {
         ArrayList<Message> conversations = new ArrayList<>();
         for (Message message: messageList) {
             boolean last = true;
@@ -81,8 +80,7 @@ public class Message {
         return conversations;
     }
 
-    static ArrayList<Message> getFromSender(Context context, String auth) {
-        readAllMessages(context);
+    static ArrayList<Message> getFromSender(String auth) {
         ArrayList<Message> messages = new ArrayList<>();
         for (Message message: messageList) {
             if (message.author.equals(auth))
@@ -126,12 +124,8 @@ public class Message {
 
                         Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
 
-                        int duration = Toast.LENGTH_LONG;
-                        Toast toast = Toast.makeText(context,
-                                "senderNum: " + senderNum + ", message: " + message, duration);
-                        toast.show();
 
-                        addMessage(senderNum, message, MESSAGE_RECEIVED);
+                        addMessage(Contact.findNameByNumber(senderNum), message, MESSAGE_RECEIVED);
                         Objects.requireNonNull(inbox.getFragmentManager()).beginTransaction().detach(inbox).attach(inbox).commit();
 
                     }

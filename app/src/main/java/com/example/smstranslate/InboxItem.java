@@ -1,19 +1,13 @@
 package com.example.smstranslate;
 
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,7 +22,7 @@ public class InboxItem extends AppCompatActivity {
     public TextView name;
     public EditText input;
     public ImageView send;
-    InboxItemAdapter recyclerAdapter;
+    public static InboxItemAdapter recyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +31,7 @@ public class InboxItem extends AppCompatActivity {
 
         Intent intent = getIntent();
         address =intent.getStringExtra("author");
-        messages = Message.getFromSender(getApplicationContext(), address);
+        messages = Message.getFromSender(address);
 
 
         name = findViewById(R.id.name);

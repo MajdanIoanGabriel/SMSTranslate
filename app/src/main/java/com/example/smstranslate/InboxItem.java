@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class InboxItem extends AppCompatActivity {
 
@@ -57,12 +58,17 @@ public class InboxItem extends AppCompatActivity {
                     message.send();
                     input.setText("");
                     recyclerAdapter.add(message);
-                    recyclerAdapter.notifyDataSetChanged();
+                    //recyclerAdapter.notifyDataSetChanged();
                 }
             }
         });
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Objects.requireNonNull(Message.IncomingSms.inbox.getFragmentManager()).beginTransaction().detach(Message.IncomingSms.inbox).attach(Message.IncomingSms.inbox).commit();
 
+    }
 }

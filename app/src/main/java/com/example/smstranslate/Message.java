@@ -92,7 +92,8 @@ public class Message {
 
     void send() {
         smsManager.sendTextMessage(Contact.findNumberByName(author),null, body, null, null);
-        messageList.add(this);
+        messageList.add(0,this);
+
     }
 
     public static class IncomingSms extends BroadcastReceiver {

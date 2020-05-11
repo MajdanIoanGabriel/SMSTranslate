@@ -24,7 +24,7 @@ public class Message {
     boolean translated;
 
 
-    private static ArrayList<Message> messageList = new ArrayList<>();
+    public static ArrayList<Message> messageList = new ArrayList<>();
     public static final int MESSAGE_RECEIVED = 1;
     public static final int MESSAGE_SENT = 2;
     private static SmsManager smsManager= SmsManager.getDefault();
@@ -125,9 +125,11 @@ public class Message {
 
                         Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
 
-
-                        addMessage(Contact.findNameByNumber(senderNum), message, MESSAGE_RECEIVED);
+                        Message m = new Message(Contact.findNameByNumber(senderNum), message, MESSAGE_RECEIVED);
+                        messageList.add(0,m);
                         Objects.requireNonNull(inbox.getFragmentManager()).beginTransaction().detach(inbox).attach(inbox).commit();
+                            if(InboxItem.instance != null)
+                                InboxItem.instance.recyclerAdapter.add(m);
 
                     }
                 }

@@ -45,8 +45,8 @@ public class Translate {
                                 message.translated = true;
 
                                 Inbox.adapter.notifyDataSetChanged();
-                                if(InboxItem.recyclerAdapter != null)
-                                    InboxItem.recyclerAdapter.notifyDataSetChanged();
+                                if(InboxItem.instance != null)
+                                    InboxItem.instance.recyclerAdapter.notifyDataSetChanged();
 
 
                             }

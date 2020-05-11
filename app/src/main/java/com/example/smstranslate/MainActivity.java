@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
                 ((TextView) parent.getChildAt(0)).setTextSize(20);
                 sourceLang.setValue(adapter.getItem(position));
+                //Message.readAllMessages(MainActivity.this);
+                //Inbox.adapter.notifyDataSetChanged();
+                Objects.requireNonNull(Message.IncomingSms.inbox.getFragmentManager()).beginTransaction().detach(Message.IncomingSms.inbox).attach(Message.IncomingSms.inbox).commit();
             }
 
             @Override

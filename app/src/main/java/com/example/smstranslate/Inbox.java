@@ -51,6 +51,11 @@ public class Inbox extends ListFragment {
         list = getListView();
 
         conversations = Message.getConversations();
+        final int translate_to;
+        if(MainActivity.sourceLang.getValue() != null)
+            translate_to = FirebaseTranslateLanguage.languageForLanguageCode(MainActivity.sourceLang.getValue().getCode());
+        else
+            translate_to = FirebaseTranslateLanguage.EN;
 
         adapter = new ArrayAdapter<Message>(Objects.requireNonNull(getActivity()),
                 android.R.layout.simple_list_item_2, android.R.id.text2, conversations) {
@@ -61,12 +66,12 @@ public class Inbox extends ListFragment {
                 TextView text1 = view.findViewById(android.R.id.text1);
                 TextView text2 = view.findViewById(android.R.id.text2);
 
-                Translate translate = new Translate(FirebaseTranslateLanguage.RO, FirebaseTranslateLanguage.EN);
+                Translate translate = new Translate(FirebaseTranslateLanguage.RO, translate_to);
                 translate.translate(conversations.get(position));
 
 
                 text1.setText(conversations.get(position).author);
-                text2.setText(conversations.get(position).body);
+                text2.setText(conversations.get(position).translated_body);
 
                 return view;
             }

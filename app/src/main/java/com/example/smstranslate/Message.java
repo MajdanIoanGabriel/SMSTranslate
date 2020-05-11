@@ -21,7 +21,8 @@ public class Message {
     String author;
     String body;
     Integer type;
-    boolean translated;
+    String translated_body;
+    String translated;
 
 
     public static ArrayList<Message> messageList = new ArrayList<>();
@@ -35,7 +36,8 @@ public class Message {
         author = auth;
         body = bdy;
         type = tp;
-        translated = false;
+        translated_body = bdy;
+        translated = "";
     }
 
     private static void addMessage(String auth, String bdy, Integer tp) {

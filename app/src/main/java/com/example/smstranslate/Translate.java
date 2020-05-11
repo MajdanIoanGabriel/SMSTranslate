@@ -30,8 +30,9 @@ public class Translate {
 
 
     public void translate(final Message message) {
-
-        if (message.translated)
+        if(MainActivity.sourceLang.getValue() == null)
+            MainActivity.sourceLang.setValue(new Language("en"));
+        if (message.translated.equals(MainActivity.sourceLang.getValue().getCode()))
             return;
 
         FirebaseModelDownloadConditions conditions = new FirebaseModelDownloadConditions.Builder()
@@ -46,8 +47,8 @@ public class Translate {
                             @Override
                             public void onSuccess(@NonNull String translatedText) {
 
-                                message.body = translatedText;
-                                message.translated = true;
+                                message.translated_body = translatedText;
+                                message.translated = MainActivity.sourceLang.getValue().getCode();
 
                                 Inbox.adapter.notifyDataSetChanged();
                                 if(InboxItem.instance != null)

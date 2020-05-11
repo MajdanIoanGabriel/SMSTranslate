@@ -47,12 +47,13 @@ public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.Mess
         final Message message = messageList.get(position);
 
         // Set the data to the views here
+        final int translate_to = FirebaseTranslateLanguage.languageForLanguageCode(MainActivity.sourceLang.getValue().getCode());
 
-        Translate translate = new Translate(FirebaseTranslateLanguage.RO, FirebaseTranslateLanguage.EN);
+        Translate translate = new Translate(FirebaseTranslateLanguage.RO, translate_to);
         translate.translate(message);
 
 
-        holder.body.setText(message.body);
+        holder.body.setText(message.translated_body);
     }
 
     @Override

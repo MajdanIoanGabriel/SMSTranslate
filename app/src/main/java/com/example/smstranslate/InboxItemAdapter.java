@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
+
 import java.util.ArrayList;
 
 public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.MessageHolder> {
@@ -45,7 +47,13 @@ public class InboxItemAdapter extends RecyclerView.Adapter<InboxItemAdapter.Mess
         final Message message = messageList.get(position);
 
         // Set the data to the views here
-        holder.body.setText(message.body);
+        final int translate_to = FirebaseTranslateLanguage.languageForLanguageCode(MainActivity.sourceLang.getValue().getCode());
+
+        Translate translate = new Translate(FirebaseTranslateLanguage.RO, translate_to);
+        translate.translate(message);
+
+
+        holder.body.setText(message.translated_body);
     }
 
     @Override

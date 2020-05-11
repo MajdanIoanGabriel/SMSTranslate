@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -19,7 +22,7 @@ import java.util.Objects;
 public class Inbox extends ListFragment {
 
     private ListView list;
-    private static ArrayAdapter<Message> adapter;
+    public static ArrayAdapter<Message> adapter;
     private ArrayList<Message> conversations;
 
     public Inbox() {}
@@ -38,6 +41,7 @@ public class Inbox extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         return inflater.inflate(R.layout.inbox_fragment, container, false);
     }
 
@@ -45,8 +49,13 @@ public class Inbox extends ListFragment {
         super.onActivityCreated(savedInstanceState);
 
         list = getListView();
-        Contact.updateContacts(getActivity());
-        conversations = Message.getConversations(getContext());
+
+        conversations = Message.getConversations();
+        final int translate_to;
+        if(MainActivity.sourceLang.getValue() != null)
+            translate_to = FirebaseTranslateLanguage.languageForLanguageCode(MainActivity.sourceLang.getValue().getCode());
+        else
+            translate_to = FirebaseTranslateLanguage.EN;
 
         adapter = new ArrayAdapter<Message>(Objects.requireNonNull(getActivity()),
                 android.R.layout.simple_list_item_2, android.R.id.text2, conversations) {
@@ -57,9 +66,12 @@ public class Inbox extends ListFragment {
                 TextView text1 = view.findViewById(android.R.id.text1);
                 TextView text2 = view.findViewById(android.R.id.text2);
 
-                text1.setText(conversations.get(position).author);
-                text2.setText(conversations.get(position).body);
+                Translate translate = new Translate(FirebaseTranslateLanguage.RO, translate_to);
+                translate.translate(conversations.get(position));
 
+
+                text1.setText(conversations.get(position).author);
+                text2.setText(conversations.get(position).translated_body);
 
                 return view;
             }
@@ -69,7 +81,7 @@ public class Inbox extends ListFragment {
     }
 
     private void refreshAdapter() {
-        conversations = Message.getConversations(getContext());
+        conversations = Message.getConversations();
         adapter.clear();
         adapter.addAll(conversations);
         adapter.notifyDataSetChanged();
@@ -78,7 +90,7 @@ public class Inbox extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        conversations = Message.getConversations(getContext());
+        conversations = Message.getConversations();
         refreshAdapter();
     }
 

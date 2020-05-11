@@ -1,24 +1,20 @@
 package com.example.smstranslate;
 
 
-import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class InboxItem extends AppCompatActivity {
 
@@ -28,7 +24,9 @@ public class InboxItem extends AppCompatActivity {
     public TextView name;
     public EditText input;
     public ImageView send;
-    InboxItemAdapter recyclerAdapter;
+    public InboxItemAdapter recyclerAdapter;
+
+    public static InboxItem instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +35,9 @@ public class InboxItem extends AppCompatActivity {
 
         Intent intent = getIntent();
         address =intent.getStringExtra("author");
-        messages = Message.getFromSender(getApplicationContext(), address);
+        messages = Message.getFromSender(address);
 
-
+        instance = this;
         name = findViewById(R.id.name);
         name.setText(address);
 
@@ -63,12 +61,16 @@ public class InboxItem extends AppCompatActivity {
                     message.send();
                     input.setText("");
                     recyclerAdapter.add(message);
-                    recyclerAdapter.notifyDataSetChanged();
                 }
             }
         });
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Objects.requireNonNull(Message.IncomingSms.inbox.getFragmentManager()).beginTransaction().detach(Message.IncomingSms.inbox).attach(Message.IncomingSms.inbox).commit();
 
+    }
 }
